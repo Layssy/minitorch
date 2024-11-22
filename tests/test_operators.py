@@ -108,7 +108,20 @@ def test_sigmoid(a: float) -> None:
     * It is  strictly increasing.
     """
     # TODO: Implement for Task 0.2.
-    raise NotImplementedError('Need to implement for Task 0.2')
+    # 验证正确性
+    #1、检查输出是否在0-1之间
+    #2、检查1-sigmoid(a) == sigmoid(-a)
+    #3、检查在 a>=0时，sigmoid(a)>=0.5
+    assert sigmoid(a)>=0 and sigmoid(a)<=1
+    assert_close(1-sigmoid(a),sigmoid(neg(a)))
+    if a >= 0.0:
+        assert  sigmoid(a) >= 0.5
+    else :
+        assert  sigmoid(a) <= 0.5
+    #  检查单调性
+    EPS = 1
+    assert sigmoid(a+EPS)>=sigmoid(a)
+    
 
 
 @pytest.mark.task0_2
@@ -116,7 +129,8 @@ def test_sigmoid(a: float) -> None:
 def test_transitive(a: float, b: float, c: float) -> None:
     "Test the transitive property of less-than (a < b and b < c implies a < c)"
     # TODO: Implement for Task 0.2.
-    raise NotImplementedError('Need to implement for Task 0.2')
+    if lt(a,b) and lt(b,c):
+        assert lt(a,c)==1
 
 
 @pytest.mark.task0_2
@@ -124,9 +138,12 @@ def test_symmetric() -> None:
     """
     Write a test that ensures that :func:`minitorch.operators.mul` is symmetric, i.e.
     gives the same value regardless of the order of its input.
+    验证算子的正确性
     """
     # TODO: Implement for Task 0.2.
-    raise NotImplementedError('Need to implement for Task 0.2')
+    x = 2.0
+    y = 3.0
+    assert_close(mul(x,y), mul(y,x))
 
 
 @pytest.mark.task0_2
@@ -136,7 +153,10 @@ def test_distribute() -> None:
     :math:`z \times (x + y) = z \times x + z \times y`
     """
     # TODO: Implement for Task 0.2.
-    raise NotImplementedError('Need to implement for Task 0.2')
+    x = 2.0
+    y = 3.0
+    z = 4.0
+    assert_close(mul(z,add(x,y)),add(mul(z,x),mul(z,y)))
 
 
 @pytest.mark.task0_2
@@ -145,7 +165,14 @@ def test_other() -> None:
     Write a test that ensures some other property holds for your functions.
     """
     # TODO: Implement for Task 0.2.
-    raise NotImplementedError('Need to implement for Task 0.2')
+    a = 2.0
+    b = 3.0
+    if a != 0:
+        assert_close(a*inv(a),1.0) 
+    assert add(a, b) == add(b,a)
+    assert add(a, 0) == a
+    assert mul(b, 1) == b
+
 
 
 # ## Task 0.3  - Higher-order functions
