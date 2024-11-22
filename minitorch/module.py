@@ -32,12 +32,30 @@ class Module:
     def train(self) -> None:
         "Set the mode of this module and all descendent modules to `train`."
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError('Need to implement for Task 0.4')
+        def update_train(cur):
+            """
+            cur:现在的node
+            """
+            cur.training = True
+            # 遍历他的子节点
+            for child  in cur.modules():
+                update_train(child)
+        update_train(self)
+
+
 
     def eval(self) -> None:
         "Set the mode of this module and all descendent modules to `eval`."
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError('Need to implement for Task 0.4')
+        def update_eval(cur):
+            """
+            cur:现在的node
+            """
+            cur.training = False
+            for child in cur.modules():
+                update_eval(child)
+            
+        update_eval(self)
 
     def named_parameters(self) -> Sequence[Tuple[str, Parameter]]:
         """
@@ -48,12 +66,20 @@ class Module:
             The name and `Parameter` of each ancestor parameter.
         """
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError('Need to implement for Task 0.4')
-
+        # 复制一份参数列表 
+        parameters = self._parameters.copy()
+        # 遍历参数列表以及其子参数
+        for module_name , module in self._modules.items():
+            #遍历字典的所有项
+            for submodule_name, parameter in module.named_parameters().items():
+                # 递归所有的子模块
+                parameters[str(module_name) + "." + str(submodule_name)] = parameter
+        return parameters
+        
     def parameters(self) -> Sequence[Parameter]:
         "Enumerate over all the parameters of this module and its descendents."
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError('Need to implement for Task 0.4')
+        return  self.named_parameters().values()
 
     def add_parameter(self, k: str, v: Any) -> Parameter:
         """
