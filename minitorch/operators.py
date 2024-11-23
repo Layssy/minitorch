@@ -41,6 +41,14 @@ def lt(x: float, y: float) -> float:
         return 1.0
     else :
         return  0.0
+
+def gt(x: float, y: float) -> float:
+    "$f(x) =$ 1.0 if x is greater than y else 0.0"
+    # TODO: Implement for Task 0.1.
+    if y > x:
+        return 0.0
+    else :
+        return  1.0
     # return 
 
 def eq(x: float, y: float) -> float:
