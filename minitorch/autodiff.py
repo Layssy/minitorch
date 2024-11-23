@@ -23,7 +23,19 @@ def central_difference(f: Any, *vals: Any, arg: int = 0, epsilon: float = 1e-6) 
         An approximation of $f'_i(x_0, \ldots, x_{n-1})$
     """
     # TODO: Implement for Task 1.1.
-    raise NotImplementedError('Need to implement for Task 1.1')
+    # 计算函数f 在逼近arg时候的导数
+    # 拆分输入 
+    inps = [inp for inp in vals]
+    # 计算在arg 和 arg+epsilon的函数时
+    inps[arg] += epsilon
+    neg = [inp for inp in vals]
+    neg[arg] -= epsilon
+    # 导数的近似
+    return (f(*inps)-f(*neg))/(2*epsilon)
+    
+        
+    
+    
 
 
 variable_count = 1
