@@ -106,7 +106,7 @@ class Scalar:
 
     def __gt__(self, b: ScalarLike) -> Scalar:
         # TODO: Implement for Task 1.2.
-        return GT.apply(self,b)
+        return LT.apply(b,self)
         # raise NotImplementedError('Need to implement for Task 1.2')
 
     def __eq__(self, b: ScalarLike) -> Scalar:  # type: ignore[override]
@@ -116,8 +116,8 @@ class Scalar:
 
     def __sub__(self, b: ScalarLike) -> Scalar:
         # TODO: Implement for Task 1.2.
-        # return
-        raise NotImplementedError('Need to implement for Task 1.2')
+        return Add.apply(self,Neg.apply(b))
+        # raise NotImplementedError('Need to implement for Task 1.2')
 
     def __neg__(self) -> Scalar:
         # TODO: Implement for Task 1.2.
