@@ -123,7 +123,6 @@ class Scalar:
     def __neg__(self) -> Scalar:
         # TODO: Implement for Task 1.2.
         return  Neg.apply(self)
-        raise NotImplementedError('Need to implement for Task 1.2')
 
     def __radd__(self, b: ScalarLike) -> Scalar:
         return self + b
@@ -190,20 +189,11 @@ class Scalar:
         # print(self.is_constant())
         grads = h.last_fn._backward(h.ctx, d_output) # 得到梯度
         inputs = h.inputs # 前向传播的输入数据 , 根据输入数据，这些计算梯度
-        res = [] # 记录每个输入的梯度
+        res = []
         for inp, grad in zip(inputs,grads):
-            # if not self.is_constant(inp):
-            res.append((inp,grad))
+            if not inp.is_constant():
+                res.append((inp,grad)) # 记录每个输入的梯度
         return res    
-        
-        
-        
-        
-        
-        
-        
-        
-        # raise NotImplementedError('Need to implement for Task 1.3')
 
     def backward(self, d_output: Optional[float] = None) -> None:
         """
