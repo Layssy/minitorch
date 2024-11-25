@@ -125,9 +125,9 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
     # 第一步获取拓扑序列
     res = topological_sort(variable)
     derivs = {variable.unique_id:deriv} # 记录当前变量的导数
-       # 根据拓扑排序进行 反向传播
+       # 根据拓扑排序进行 反向传播-> 流程：反向传播-> 链式法则 --> 汇总导数，只有在叶子结点才会有存储梯度
     for node in res:
-        print(node)
+        # print(node)
         d_output = derivs[node.unique_id]
         if node.is_leaf():
             node.accumulate_derivative(d_output)
@@ -137,7 +137,6 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
                 if inp.unique_id not in derivs:
                     derivs[inp.unique_id] = 0.0
                 derivs[inp.unique_id]+=d
-        print(derivs[node.unique_id])
 
 
 
