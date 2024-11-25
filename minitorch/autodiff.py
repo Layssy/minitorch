@@ -74,8 +74,41 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
         Non-constant Variables in topological order starting from the right.
     """
     # TODO: Implement for Task 1.4.
-    raise NotImplementedError('Need to implement for Task 1.4')
+    # 基于深度优先搜索的算法 来进行拓扑排序
+    # 根据输出的结点来进行拓扑排序
+    PermanentMarked = []
+    TemporaryMarked = []
+    
+    result = []
+    
+    def dfs(variable):
+        if variable.is_constant():
+            # 不处理常量
+            return
+        if variable.unique_id in PermanentMarked:
+            # 这个结点已经被处理
+            return 
+        elif variable.unique_id in TemporaryMarked:
+            raise(RuntimeError("Not a DAG"))
+        # 开始正常处理结点的排序 ，从后往前排
+        # 这个结点没处理完的时候，是需要标记的
+        TemporaryMarked.append(variable.unique_id)
+        if variable.is_leaf():
+            pass #为啥不直接返回,因为需要移除标记位
+        else :
+            # 遍历结点
+            for inp in variable.history.inputs:
+                dfs(inp) # 遍历输入
+            
+        TemporaryMarked.remove(variable.unique_id)
+        PermanentMarked.append(variable.unique_id)
 
+        # 将拓扑的结果插入到res的list里面
+        result.insert(0,variable)
+    dfs(variable=variable)
+    return result
+    
+    # raise NotImplementedError('Need to implement for Task 1.4')
 
 def backpropagate(variable: Variable, deriv: Any) -> None:
     """
@@ -89,7 +122,23 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
     No return. Should write to its results to the derivative values of each leaf through `accumulate_derivative`.
     """
     # TODO: Implement for Task 1.4.
-    raise NotImplementedError('Need to implement for Task 1.4')
+    # 第一步获取拓扑序列
+    res = topological_sort(variable)
+    derivs = {variable.unique_id:deriv} # 记录当前变量的导数
+       # 根据拓扑排序进行 反向传播
+    for node in res:
+        print(node)
+        d_output = derivs[node.unique_id]
+        if node.is_leaf():
+            node.accumulate_derivative(d_output)
+        else :
+            res_chain_relu = node.chain_rule(d_output)
+            for inp, d in res_chain_relu:
+                if inp.unique_id not in derivs:
+                    derivs[inp.unique_id] = 0.0
+                derivs[inp.unique_id]+=d
+        print(derivs[node.unique_id])
+
 
 
 @dataclass

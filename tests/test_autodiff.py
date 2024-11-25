@@ -105,7 +105,7 @@ def test_chain_rule4() -> None:
 def test_backprop1() -> None:
     # Example 1: F1(0, v)
     var = minitorch.Scalar(0)
-    var2 = Function1.apply(0, var)
+    var2 = Function1.apply(1, var)
     var2.backward(d_output=5)
     assert var.derivative == 5
 
@@ -113,9 +113,9 @@ def test_backprop1() -> None:
 @pytest.mark.task1_4
 def test_backprop2() -> None:
     # Example 2: F1(0, 0)
-    var = minitorch.Scalar(0)
-    var2 = Function1.apply(0, var)
-    var3 = Function1.apply(0, var2)
+    var = minitorch.Scalar(0) # 叶子结点，直接通过用户产生的 
+    var2 = Function1.apply(0, var) # 非叶子结点 通过运算产生
+    var3 = Function1.apply(0, var2) # 非叶子结点通过运算产生
     var3.backward(d_output=5)
     assert var.derivative == 5
 

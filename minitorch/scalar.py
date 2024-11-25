@@ -182,15 +182,11 @@ class Scalar:
         assert h.last_fn is not None
         assert h.ctx is not None
 
-        # # TODO: Implement for Task 1.3.
-        # print(h) # 存储的历史记录
-        # print(h.last_fn) # 最后的一个函数
-        # print(h.ctx) # 存储的输入信息
-        # print(self.is_constant())
         grads = h.last_fn._backward(h.ctx, d_output) # 得到梯度
         inputs = h.inputs # 前向传播的输入数据 , 根据输入数据，这些计算梯度
         res = []
         for inp, grad in zip(inputs,grads):
+            # print(f'inp:{inp}')
             if not inp.is_constant():
                 res.append((inp,grad)) # 记录每个输入的梯度
         return res    
