@@ -75,6 +75,7 @@ class Add(ScalarFunction):
 
     @staticmethod
     def forward(ctx: Context, a: float, b: float) -> float:
+        ctx.save_for_backward(a,b)
         return a + b
 
     @staticmethod
@@ -106,6 +107,7 @@ class Mul(ScalarFunction):
     def forward(ctx: Context, a: float, b: float) -> float:
         # TODO: Implement for Task 1.2.
         # raise NotImplementedError('Need to implement for Task 1.2')
+        ctx.save_for_backward(a,b)
         return operators.mul(a,b)
 
     @staticmethod
@@ -120,6 +122,8 @@ class Inv(ScalarFunction):
     @staticmethod
     def forward(ctx: Context, a: float) -> float:
         # TODO: Implement for Task 1.2.
+        ctx.save_for_backward(a)
+
         return operators.inv(a)
         # raise NotImplementedError('Need to implement for Task 1.2')
 
@@ -135,6 +139,7 @@ class Neg(ScalarFunction):
     @staticmethod
     def forward(ctx: Context, a: float) -> float:
         # TODO: Implement for Task 1.2.
+        ctx.save_for_backward(a)
         return operators.neg(a)
         # raise NotImplementedError('Need to implement for Task 1.2')
 
@@ -150,6 +155,8 @@ class Sigmoid(ScalarFunction):
     @staticmethod
     def forward(ctx: Context, a: float) -> float:
         # TODO: Implement for Task 1.2.
+        ctx.save_for_backward(a)
+
         return operators.sigmoid(a)
         # raise NotImplementedError('Need to implement for Task 1.2')
 
@@ -165,6 +172,8 @@ class ReLU(ScalarFunction):
     @staticmethod
     def forward(ctx: Context, a: float) -> float:
         # TODO: Implement for Task 1.2.
+        ctx.save_for_backward(a)
+
         return operators.relu(a)
         # raise NotImplementedError('Need to implement for Task 1.2')
 
@@ -181,6 +190,7 @@ class Exp(ScalarFunction):
     def forward(ctx: Context, a: float) -> float:
         # TODO: Implement for Task 1.2.
         # raise NotImplementedError('Need to implement for Task 1.2')
+        ctx.save_for_backward(a)
         return operators.exp(a)
 
     @staticmethod
@@ -196,6 +206,7 @@ class LT(ScalarFunction):
     def forward(ctx: Context, a: float, b: float) -> float:
         # TODO: Implement for Task 1.2.
         # raise NotImplementedError('Need to implement for Task 1.2')
+        ctx.save_for_backward(a,b)
         return operators.lt(a,b)
 
     @staticmethod
@@ -211,6 +222,7 @@ class GT(ScalarFunction):
     def forward(ctx: Context, a: float, b: float) -> float:
         # TODO: Implement for Task 1.2.
         # raise NotImplementedError('Need to implement for Task 1.2')
+        ctx.save_for_backward(a,b)
         return operators.gt(a,b)
 
     @staticmethod
@@ -225,6 +237,7 @@ class EQ(ScalarFunction):
     def forward(ctx: Context, a: float, b: float) -> float:
         # TODO: Implement for Task 1.2.
         # raise NotImplementedError('Need to implement for Task 1.2')
+        ctx.save_for_backward(a,b)
         return operators.eq(a,b)
 
     @staticmethod

@@ -18,6 +18,7 @@ from .scalar_functions import (
     ReLU,
     ScalarFunction,
     Sigmoid,
+    wrap_tuple
 )
 
 ScalarLike = Union[float, int, "Scalar"]
@@ -182,8 +183,27 @@ class Scalar:
         assert h.last_fn is not None
         assert h.ctx is not None
 
-        # TODO: Implement for Task 1.3.
-        raise NotImplementedError('Need to implement for Task 1.3')
+        # # TODO: Implement for Task 1.3.
+        # print(h) # 存储的历史记录
+        # print(h.last_fn) # 最后的一个函数
+        # print(h.ctx) # 存储的输入信息
+        # print(self.is_constant())
+        grads = h.last_fn._backward(h.ctx, d_output) # 得到梯度
+        inputs = h.inputs # 前向传播的输入数据 , 根据输入数据，这些计算梯度
+        res = [] # 记录每个输入的梯度
+        for inp, grad in zip(inputs,grads):
+            # if not self.is_constant(inp):
+            res.append((inp,grad))
+        return res    
+        
+        
+        
+        
+        
+        
+        
+        
+        # raise NotImplementedError('Need to implement for Task 1.3')
 
     def backward(self, d_output: Optional[float] = None) -> None:
         """
