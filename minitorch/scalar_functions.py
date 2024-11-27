@@ -168,7 +168,6 @@ class Sigmoid(ScalarFunction):
     def backward(ctx: Context, d_output: float) -> float:
         # TODO: Implement for Task 1.4.
         a= ctx.saved_values[0]
-        print(a)
         return operators.mul(operators.mul(operators.sigmoid(a),operators.add(1.0,operators.neg(operators.sigmoid(a)))), d_output)
 
 
