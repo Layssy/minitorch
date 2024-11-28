@@ -37,14 +37,17 @@ def index_to_position(index: Index, strides: Strides) -> int:
 
     Args:
         index : index tuple of ints
-        strides : tensor strides
+        strides : tensor strides 
 
     Returns:
-        Position in storage
+        Position in storage ---> 一维数组中的位置
     """
-
     # TODO: Implement for Task 2.1.
-    raise NotImplementedError('Need to implement for Task 2.1')
+    res = 0
+    for i in range(len(index)):
+        res += index[i]*strides[i]
+    return res
+    # raise NotImplementedError('Need to implement for Task 2.1')
 
 
 def to_index(ordinal: int, shape: Shape, out_index: OutIndex) -> None:
@@ -60,8 +63,10 @@ def to_index(ordinal: int, shape: Shape, out_index: OutIndex) -> None:
         out_index : return index corresponding to position.
 
     """
-    # TODO: Implement for Task 2.1.
-    raise NotImplementedError('Need to implement for Task 2.1')
+    for d in range(len(shape)-1,-1,-1):
+        out_index[d] = ordinal % shape[d]
+        ordinal = ordinal // shape[d]
+    # raise NotImplementedError('Need to implement for Task 2.1')
 
 
 def broadcast_index(
@@ -128,12 +133,18 @@ class TensorData:
         shape: UserShape,
         strides: Optional[UserStrides] = None,
     ):
+        """
+        storage: 存储的连续数据
+        shape: tensor被认为的形状
+        strides:对于一个多维数组或张量，strides提供了一种方式来理解如何从一个元素移动到另一个元素。在多维数组中，strides的每个元素表示为了到达下一个元素，需要在内存中前进多少个元素的字节。例如，对于一个二维数组，strides的第一个元素表示在行内移动到下一个元素需要的字节数，第二个元素表示移动到下一行的下一个元素需要的字节数。
+        """
         if isinstance(storage, np.ndarray):
             self._storage = storage
         else:
             self._storage = array(storage, dtype=float64)
 
         if strides is None:
+            # 从默认的形状中的得到每个维度的步长
             strides = strides_from_shape(shape)
 
         assert isinstance(strides, tuple), "Strides must be tuple"
@@ -143,10 +154,10 @@ class TensorData:
         self._strides = array(strides)
         self._shape = array(shape)
         self.strides = strides
-        self.dims = len(strides)
-        self.size = int(prod(shape))
-        self.shape = shape
-        assert len(self._storage) == self.size
+        self.dims = len(strides)  # dims ： 一共几个维度
+        self.size = int(prod(shape)) # size :一共多少个元素
+        self.shape = shape 
+        assert len(self._storage) == self.size # 原始的一维数据 要等于 size的大小
 
     def to_cuda_(self) -> None:  # pragma: no cover
         if not numba.cuda.is_cuda_array(self._storage):
@@ -228,7 +239,13 @@ class TensorData:
         ), f"Must give a position to each dimension. Shape: {self.shape} Order: {order}"
 
         # TODO: Implement for Task 2.1.
-        raise NotImplementedError('Need to implement for Task 2.1')
+        new_shape = []
+        new_stride = []
+        for i in  order:
+            new_shape.append(self.shape[i])
+        for i in  order:
+            new_stride.append(self.strides[i])
+        return TensorData(self._storage,tuple(new_shape),tuple(new_stride))
 
     def to_string(self) -> str:
         s = ""

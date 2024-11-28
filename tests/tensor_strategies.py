@@ -48,10 +48,13 @@ def tensor_data(
         shape = draw(shapes())
     size = int(minitorch.prod(shape))
     data = draw(lists(numbers, min_size=size, max_size=size))
+    # print(f'data:{data}')
     permute: List[int] = draw(permutations(range(len(shape))))
+    # print(f'permute:{permute}')
     permute_shape = tuple([shape[i] for i in permute])
     z = sorted(enumerate(permute), key=lambda a: a[1])
     reverse_permute = [a[0] for a in z]
+    # print(f'reverse_permute:{reverse_permute}')
     td = minitorch.TensorData(data, permute_shape)
     ret = td.permute(*reverse_permute)
     assert ret.shape[0] == shape[0]
