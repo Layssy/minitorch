@@ -66,8 +66,6 @@ def to_index(ordinal: int, shape: Shape, out_index: OutIndex) -> None:
     for d in range(len(shape)-1,-1,-1):
         out_index[d] = ordinal % shape[d]
         ordinal = ordinal // shape[d]
-    # raise NotImplementedError('Need to implement for Task 2.1')
-
 
 def broadcast_index(
     big_index: Index, big_shape: Shape, shape: Shape, out_index: OutIndex
@@ -89,8 +87,10 @@ def broadcast_index(
         None
     """
     # TODO: Implement for Task 2.2.
-    raise NotImplementedError('Need to implement for Task 2.2')
-
+    # broadcast_index 函数根据广播规则将 big_shape 的 big_index 转换为较小的 shape 的 out_index。
+    for i in range(len(shape)):
+        offset = i + len(big_shape) - len(shape)
+        out_index[i] = big_index[offset] if shape[i]!=1 else 0
 
 def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
     """
@@ -106,8 +106,32 @@ def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
     Raises:
         IndexingError : if cannot broadcast
     """
+    # 如果遵守以下规则，则两个tensor是“可广播的”：
+    # 每个tensor至少有一个维度；
+    # 遍历tensor所有维度时，从末尾开始遍历（从右往左开始遍历）（从后往前开始遍历），两个tensor存在下列情况：
+    # tensor维度相等。
+    # tensor维度不等且其中一个维度为1。
+    # tensor维度不等且其中一个维度不存在。
+    # 1、判断两个tensor的维度是否相等,不相等需要在左侧进行 扩充
+    l = max(len(shape1),len(shape2))
+    if len(shape1) > len(shape2):
+        # 扩充左边
+        shape2 = [shape1[i] for i in range(l-len(shape2))] + list(shape2)
+    else :
+        shape1 = [shape2[i] for i in range(l-len(shape1))] + list(shape1)
+    ans = []
+    # 怎么进行扩充
+    for i in range(l):
+        # 不能扩充的情况
+        if shape1[i]!=shape2[i] and shape1[i]!=1 and shape2[i]!=1:
+            raise IndexingError('cannot broadcast')
+        ans.append(max(shape1[i],shape2[i]))
+    return tuple(ans)
+    
+
+
     # TODO: Implement for Task 2.2.
-    raise NotImplementedError('Need to implement for Task 2.2')
+    # raise NotImplementedError('Need to implement for Task 2.2')
 
 
 def strides_from_shape(shape: UserShape) -> UserStrides:
