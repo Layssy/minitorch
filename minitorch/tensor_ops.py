@@ -174,7 +174,7 @@ class SimpleOps(TensorOps):
             else:
                 c_shape = a.shape
             out = a.zeros(c_shape)
-            f(*out.tuple(), *a.tuple(), *b.tuple())
+            f(*out.tuple(), *a.tuple(), *b.tuple()) # 直接通过这个得到答案
             return out
 
         return ret
@@ -265,7 +265,24 @@ def tensor_map(
         in_strides: Strides,
     ) -> None:
         # TODO: Implement for Task 2.3.
-        raise NotImplementedError('Need to implement for Task 2.3')
+        # TODO: Implement for Task 2.3.
+        # 实现 张量的zip操作，f是给定的 
+        n = len(out)
+        dim_a = len(in_shape)  # a 的维度 
+        dim_c = len(out_shape)
+        for i in  range(n):
+            # 得到所有数字
+            out_index = [0 for _ in range(dim_c)]
+            to_index(i,out_shape,out_index) # 得到 i在tensor中对应的index
+            idx_o =  index_to_position(out_index,out_strides)
+            
+            index_a = [0 for _ in range(dim_a)]
+            broadcast_index(out_index, out_shape, in_shape, index_a) # 广播的原因是因为可能 tensor a 是 通过广播得来的， 原始形状对不上
+            idx_a = index_to_position(index_a,in_strides)
+            x_a = in_storage[idx_a]
+            
+            out[idx_o] = fn(x_a)
+
 
     return _map
 
@@ -299,18 +316,41 @@ def tensor_zip(
     """
 
     def _zip(
-        out: Storage,
-        out_shape: Shape,
-        out_strides: Strides,
-        a_storage: Storage,
+        out: Storage, # 存储 的结果
+        out_shape: Shape, # 最后的形状
+        out_strides: Strides,# 步长
+        a_storage: Storage, # 输入的值
         a_shape: Shape,
         a_strides: Strides,
-        b_storage: Storage,
+        b_storage: Storage, # 另一个输入的值
         b_shape: Shape,
         b_strides: Strides,
     ) -> None:
         # TODO: Implement for Task 2.3.
-        raise NotImplementedError('Need to implement for Task 2.3')
+        # 实现 张量的zip操作，f是给定的 
+        n = len(out)
+        dim_a = len(a_shape)  # a 的维度 
+        dim_b = len(b_shape)
+        dim_c = len(out_shape)
+        
+        for i in  range(n):
+            # 得到所有数字
+            out_index = [0 for _ in range(dim_c)]
+            to_index(i,out_shape,out_index) # 得到 i在tensor中对应的index
+            idx_o =  index_to_position(out_index,out_strides)
+            
+            index_a = [0 for _ in range(dim_a)]
+            broadcast_index(out_index, out_shape, a_shape, index_a) # 广播的原因是因为可能 tensor a 是 通过广播得来的， 原始形状对不上
+            idx_a = index_to_position(index_a,a_strides)
+            x_a = a_storage[idx_a]
+            
+            index_b = [0 for _ in range(dim_b)]
+            broadcast_index(out_index, out_shape, b_shape, index_b)# 广播的原因是因为可能 tensor b 是 通过广播得来的，原始形状对不上
+            idx_b = index_to_position(index_b,b_strides)
+            x_b = b_storage[idx_b]
+            print(f'x_a,x_b:{x_a},,,,,,{x_b}')
+            out[idx_o] = fn(x_a,x_b)
+            print(f'out[idx_o]:{out[idx_o]}')
 
     return _zip
 
@@ -341,7 +381,26 @@ def tensor_reduce(
         reduce_dim: int,
     ) -> None:
         # TODO: Implement for Task 2.3.
-        raise NotImplementedError('Need to implement for Task 2.3')
+        # 在弄清楚一点
+        n = len(out)
+        out_dims = len(a_shape)
+        for i in range(n):
+            # 得到所有数字
+            out_index = [0 for _ in range(out_dims)]
+            to_index(i,out_shape,out_index) # 得到 i在tensor中对应的index
+            idx_o =  index_to_position(out_index,out_strides)
+            reduce_dim_size = a_shape[reduce_dim]
+            
+            for j in range(reduce_dim_size):
+                idx_a = out_index.copy()
+            
+                idx_a[reduce_dim] = j
+            
+                pos_a = index_to_position(idx_a, a_strides)
+
+                out[idx_o] = fn(a_storage[pos_a], out[idx_o])     
+
+            
 
     return _reduce
 

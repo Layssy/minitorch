@@ -29,6 +29,7 @@ def test_one_args(
     "Test one-arg functions compared to floats"
     name, base_fn, tensor_fn = fn
     t2 = tensor_fn(t1)
+    print(f't2:{t2}')
     for ind in t2._tensor.indices():
         assert_close(t2[ind], base_fn(t1[ind]))
 
