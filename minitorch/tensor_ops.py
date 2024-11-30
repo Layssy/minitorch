@@ -335,7 +335,7 @@ def tensor_zip(
         
         for i in  range(n):
             # 得到所有数字
-            out_index = [0 for _ in range(dim_c)]
+            out_index = [0 for _ in range(dim_c)] # 初始化数据在每个维度对应的index（0）
             to_index(i,out_shape,out_index) # 得到 i在tensor中对应的index
             idx_o =  index_to_position(out_index,out_strides)
             
@@ -348,9 +348,7 @@ def tensor_zip(
             broadcast_index(out_index, out_shape, b_shape, index_b)# 广播的原因是因为可能 tensor b 是 通过广播得来的，原始形状对不上
             idx_b = index_to_position(index_b,b_strides)
             x_b = b_storage[idx_b]
-            print(f'x_a,x_b:{x_a},,,,,,{x_b}')
             out[idx_o] = fn(x_a,x_b)
-            print(f'out[idx_o]:{out[idx_o]}')
 
     return _zip
 
@@ -386,9 +384,9 @@ def tensor_reduce(
         out_dims = len(a_shape)
         for i in range(n):
             # 得到所有数字
-            out_index = [0 for _ in range(out_dims)]
+            out_index = [0 for _ in range(out_dims)] # 初始化每个维度对应的索引为【0，0，0，0......0】
             to_index(i,out_shape,out_index) # 得到 i在tensor中对应的index
-            idx_o =  index_to_position(out_index,out_strides)
+            idx_o =  index_to_position(out_index,out_strides) # 将index 转化为具体存储的一维的index
             reduce_dim_size = a_shape[reduce_dim]
             
             for j in range(reduce_dim_size):
