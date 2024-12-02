@@ -223,6 +223,7 @@ class Tensor:
 
     def permute(self, *order: int) -> Tensor:
         "Permute tensor dimensions to *order"
+        print(f'order:{order}')
         return Permute.apply(self, tensor(list(order)))
 
     def view(self, *shape: int) -> Tensor:
